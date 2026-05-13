@@ -1,0 +1,43 @@
+# Observable Framework
+dist/
+.observablehq/cache/
+.observablehq/deploy.json
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local credentials / state
+.env
+.env.local
+.wrangler/
+
+# Temp
+/tmp/
+*.log
+.gstack/
+.playwright-mcp/
+
+# Claude Code local settings
+.claude/settings.local.json

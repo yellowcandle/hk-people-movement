@@ -1,0 +1,256 @@
+{
+  "_meta": {
+    "generated": "2026-05-13",
+    "purpose": "Master dataset for HK population / migration accounting, cross-referencing C&SD, IMMD, HKIA, LegCo sources, to validate or replace atseed.co/hkborder's airport-net-flow methodology",
+    "key_identity": "ΔPopulation = NaturalChange + OWP + OtherNetMigration",
+    "atseed_co_metric_label": "IMMD HK-Resident Airport Net Out — short-trip-noise-dominated; NOT equal to OtherNetMigration",
+    "sources": {
+      "AD_2024": "C&SD Hong Kong Annual Digest of Statistics 2024, Table 1.1 + 1.12 (revised, includes foreign domestic helpers, published Sep 2024)",
+      "ISSF01_LegCo": "LegCo Research Office 'Hong Kong in figures' monthly series (each issue cites C&SD)",
+      "FS05_2022": "LegCo Research Office Fact Sheet on talent attraction policies (Oct 2022)",
+      "ISSH23_2024": "LegCo Statistical Highlight on talent admission schemes (Oct 2024)",
+      "RT01_2025": "LegCo Research Topic on talent inflow policies (Feb 2025)",
+      "ISSH33_2024": "LegCo Statistical Highlight on HK residents in the Mainland (Dec 2024)",
+      "ISSH10_2025": "LegCo Statistical Highlight on cross-border elderly welfare (May 2025)",
+      "IN15_2025": "LegCo Information Note on UK/Canada healthcare eligibility (Aug 2025)",
+      "IMMD_CSV": "IMMD daily passenger traffic CSV (atseed.co's source)",
+      "HKIA_API": "hongkongairport.com flight info REST API (rolling 91-day window)",
+      "CAD_Stat": "Civil Aviation Department air traffic statistics workbook (Stat Webpage.xlsx)"
+    }
+  },
+
+  "midyear_population": {
+    "_unit": "persons",
+    "_note": "AD 2024 = latest revised series, includes foreign domestic helpers (~340K). ISSF figures are LegCo summaries citing same C&SD source.",
+    "2013": {"value": 7178900, "source": "AD_2024"},
+    "2018": {"value": 7452600, "source": "AD_2024"},
+    "2019": {"value": 7507900, "source": "AD_2024"},
+    "2020": {"value": 7481000, "source": "AD_2024"},
+    "2021": {"value": 7413100, "source": "AD_2024"},
+    "2022": {"value": 7346100, "source": "AD_2024 (revised). FS05/2022 original published 7,291,600 excluding maids."},
+    "2023": {"value": 7536100, "source": "AD_2024"},
+    "2024": {"value": 7524100, "source": "ISSF01/2025 Dec, revised provisional", "note": "Earlier ISSF01/2025 Jan reported 7,531,800 — revised down -7,700"},
+    "2025": {"value": 7527500, "source": "ISSF01/2025 Dec, provisional", "note": "Mid-year 2025 — vital component breakdown pending AD 2025 (due ~Sep 2026)"}
+  },
+
+  "yearend_population": {
+    "_unit": "persons",
+    "_note": "Year-end estimates (different from mid-year), reported in ISSF01/2026 latest issues",
+    "2024": {"value": 7500600, "source": "ISSF01/2026 May"},
+    "2025": {"value": 7510800, "source": "ISSF01/2026 May, provisional"}
+  },
+
+  "vital_statistics": {
+    "_unit": "persons",
+    "_columns": ["year", "births", "deaths", "natural_change"],
+    "2013": {"births": 57084, "deaths": 43397, "natural_change": 13687, "source": "AD_2024 Table 1.1"},
+    "2018": {"births": 53716, "deaths": 47400, "natural_change": 6316, "source": "AD_2024"},
+    "2019": {"births": 52856, "deaths": 48957, "natural_change": 3899, "source": "AD_2024"},
+    "2020": {"births": 43031, "deaths": 50666, "natural_change": -7635, "source": "AD_2024"},
+    "2021": {"births": 36953, "deaths": 51354, "natural_change": -14401, "source": "AD_2024"},
+    "2022": {"births": 32501, "deaths": 63692, "natural_change": -31191, "source": "AD_2024"},
+    "2023": {"births": 33232, "deaths": 54731, "natural_change": -21499, "source": "AD_2024"},
+    "2024": {"births": 36723, "deaths": 52393, "natural_change": -15670, "source": "ISSF04/2025 Oct (LegCo, citing C&SD)", "note": "Births up vs 2023 (talent scheme baby boom?); deaths drop"}
+  },
+
+  "one_way_permit_arrivals": {
+    "_unit": "persons",
+    "_note": "Daily quota 150. Inflow of Mainland Chinese settling in HK via OWP",
+    "2013": 45031,
+    "2018": 42331,
+    "2019": 39060,
+    "2020": 10134,
+    "2021": 17919,
+    "2022": 21214,
+    "2023": 40818,
+    "_source": "AD_2024 Table 1.12 (Security Bureau Statistics Unit)"
+  },
+
+  "derived_net_movement": {
+    "_unit": "persons",
+    "_formula": "NetMovement_y = MidPop_y - MidPop_(y-1) - NaturalChange_y. OtherNet_y = NetMovement_y - OWP_y",
+    "_source": "Derived from C&SD AD 2024 Tables 1.1 + 1.12 (no independent source; recomputable from midyear_population, vital_statistics, one_way_permit_arrivals)",
+    "_note": "Computed from AD_2024 series. 'OtherNet' is the actual emigration/immigration channel atseed.co attempts to proxy.",
+    "2019": {"yoy_pop_change": 55300, "net_movement": 51401, "owp": 39060, "other_net_migration": 12341},
+    "2020": {"yoy_pop_change": -26900, "net_movement": -19265, "owp": 10134, "other_net_migration": -29399},
+    "2021": {"yoy_pop_change": -67900, "net_movement": -53499, "owp": 17919, "other_net_migration": -71418},
+    "2022": {"yoy_pop_change": -67000, "net_movement": -35809, "owp": 21214, "other_net_migration": -57023},
+    "2023": {"yoy_pop_change": 190000, "net_movement": 211499, "owp": 40818, "other_net_migration": 170681},
+    "2024": {"yoy_pop_change": -12000, "net_movement": 3670, "owp": null, "other_net_migration": null, "_note": "ΔPop − NatChg = -12,000 − (-15,670) = +3,670 net inflow. OWP 2024 not yet officially published; await AD 2025 (Sep 2026)."},
+    "2025": {"yoy_pop_change": 3400, "net_movement": null, "owp": null, "other_net_migration": null, "_note": "2024→2025 mid-year delta from ISSF01/2025 Dec; vital + OWP components pending"},
+    "cumulative_2020_2023": {"yoy_pop_change": 28200, "natural_change": -74726, "net_movement": 102926, "owp": 90085, "other_net_migration": 12841},
+    "cumulative_2020_2025_partial": {"yoy_pop_change": 19600, "_note": "Population basically flat across 6 years; components for 2024-2025 incomplete"}
+  },
+
+  "atseed_co_airport_net": {
+    "_unit": "persons",
+    "_note": "atseed.co metric: HK-Resident airport departures minus arrivals, from IMMD daily CSV. THIS IS GROSS SHORT-TRIP MOVEMENT, NOT NET MIGRATION.",
+    "_source": "computed from IMMD opendata CSV (HK Residents only at Airport control point)",
+    "2021": {"hk_dep": 390752, "hk_arr": 237304, "net_out": 153448},
+    "2022": {"hk_dep": 1766267, "hk_arr": 1460849, "net_out": 305418},
+    "2023": {"hk_dep": 9200115, "hk_arr": 9173696, "net_out": 26419},
+    "2024": {"hk_dep": 11280037, "hk_arr": 11366398, "net_out": -86361},
+    "2025": {"hk_dep": 11690994, "hk_arr": 11731761, "net_out": -40767},
+    "cumulative_2021_2025": -358157
+  },
+
+  "talent_admission_schemes_approved": {
+    "_unit": "approvals (not arrivals)",
+    "_note": "Visa approvals — not all approved persons actually arrive. ISSH23/2024 Figure 3 + RT01/2025 cumulative.",
+    "_source": "ISSH23/2024 (Immigration Department); RT01/2025 update",
+    "annual_breakdown": {
+      "2018": {"top_talent": 0, "general_employment": 41592, "mainland_talent": 13768, "others": 10800, "total": 66160},
+      "2019": {"top_talent": 0, "general_employment": 41289, "mainland_talent": 14053, "others": 11803, "total": 67145},
+      "2020": {"top_talent": 0, "general_employment": 14617, "mainland_talent": 6995, "others": 9016, "total": 30628},
+      "2021": {"top_talent": 0, "general_employment": 13821, "mainland_talent": 9065, "others": 9362, "total": 32248},
+      "2022": {"top_talent": 875, "general_employment": 13495, "mainland_talent": 11768, "others": 13352, "total": 39490, "note": "Top Talent Pass launched Dec 2022"},
+      "2023": {"top_talent": 49737, "general_employment": 26270, "mainland_talent": 19757, "others": 39285, "total": 135049},
+      "2024H1": {"top_talent": 11510, "general_employment": 17568, "mainland_talent": 11595, "others": 20205, "total": 60878}
+    },
+    "top_talent_pass_cumulative_to_2024_end": {
+      "applications_received": 116000,
+      "applications_approved": 87000,
+      "estimated_actually_arrived": 75000,
+      "note": "RT01/2025 §1.1. Most arrivals from mainland China. Economic contribution est. HK$34B/year ≈ 1.2% of GDP.",
+      "_source": "RT01/2025"
+    },
+    "top_talent_pass_cumulative_to_2024_end_revised": {
+      "applications_received": 116000,
+      "applications_approved": 92000,
+      "estimated_actually_arrived_incl_family": 75000,
+      "median_monthly_income_HKD": 50000,
+      "share_earning_100k_plus_pct": 25,
+      "spouse_employed_pct": 20,
+      "renewal_kpi_2025_2027_annual": 50000,
+      "_source": "Hong Kong SAR Government LegCo Q&A 2025-01-22 (P2025012200216), Labour & Welfare Bureau Secretary Sun Yuk-han"
+    },
+    "source_composition_2023": {
+      "mainland_pct": 77.2,
+      "other_pct": 22.8,
+      "note": "vs 2019: mainland 36.7% / other 63.3% — major shift toward Mainland-sourced talent"
+    }
+  },
+
+  "hk_residents_in_mainland": {
+    "_unit": "persons",
+    "_note": "ISSH33/2024 cites 2020 census + C&SD 'usual stay' alternate methodology",
+    "_source": "ISSH33/2024",
+    "census_2020_definition": {
+      "total": 371380,
+      "share_of_hk_population_pct": 5,
+      "by_region": {
+        "Guangdong": 254989,
+        "Fujian": 46403,
+        "Shanghai": 23631,
+        "Beijing": 10365,
+        "others": 35992
+      },
+      "by_purpose": {
+        "settling_down": 166842,
+        "study": 77119,
+        "work": 40282,
+        "visit_family": 24786,
+        "business": 13809,
+        "others": 48542
+      }
+    },
+    "guangdong_usual_stay": {
+      "_note": "Stayed >=6 months in Guangdong within 1-year window of reference. Includes frequent cross-border travelers.",
+      "2018": 528000,
+      "2019": 557900,
+      "2023": 495900
+    },
+    "guangdong_elderly_65plus_usual_stay": {
+      "2014": 70900,
+      "2016": 75200,
+      "2018": 81000,
+      "2020": 88000,
+      "2022": 89100,
+      "2024": 99600,
+      "share_of_hk_elderly_2024_pct": 6,
+      "_source": "ISSH10/2025"
+    },
+    "guangdong_scheme_welfare_recipients": {
+      "_note": "Public Welfare Allowance recipients living in Guangdong",
+      "2014": 17145,
+      "2018": 16568,
+      "2020": 19257,
+      "2022": 22034,
+      "2024": 25736,
+      "_source": "ISSH10/2025"
+    }
+  },
+
+  "emigration_to_anglosphere": {
+    "_unit": "persons",
+    "_note": "From destination-country immigration records (UK Home Office BN(O) + Canadian PR HK-pathway + Australian Hong Kong stream)",
+    "_source": "IN15/2025",
+    "cumulative_2021_2024_to_UK_CA_AU": 172750,
+    "good_conduct_certificate_applications": {
+      "_note": "Security Bureau 'Certificate of No Criminal Conviction' — proxy for emigration intent, used in historical analyses",
+      "1981_total": 18300,
+      "1990_total": 30000,
+      "1992_peak": 61700,
+      "1993_total": 53400,
+      "1996_total": 40300,
+      "1999_total": 12900,
+      "2008_total": 9800,
+      "2014_total": 9100,
+      "2017_total": 6900,
+      "2020_total": 10500,
+      "2021_total": 6500,
+      "2023_total": 14400,
+      "1981_2023_cumulative": 910900
+    },
+    "stock_hk_born_in_anglo_2021": {
+      "australia_canada_uk_combined": 435432,
+      "_source": "Australian Bureau of Statistics + ONS + Statistics Canada via IN15/2025"
+    }
+  },
+
+  "hkia_flight_destination_mix_91day_proxy": {
+    "_unit": "flight operations (not passenger count)",
+    "_window": "2026-02-12 to 2026-05-13 (~92 days)",
+    "_source": "hongkongairport.com flight info REST API",
+    "total_ops": 41466,
+    "by_region_pct": {
+      "SE_Asia": 25.42,
+      "Mainland_China": 24.35,
+      "Japan": 15.83,
+      "Taiwan": 11.12,
+      "South_Korea": 5.50,
+      "Australia_NZ_Pacific": 4.00,
+      "USA": 3.45,
+      "Europe_Mongolia": 2.96,
+      "South_Asia": 2.60,
+      "UK_Ireland": 1.56,
+      "Middle_East_CAsia": 1.42,
+      "Canada": 1.38,
+      "Africa": 0.43
+    },
+    "_caveat": "Operation count != passenger count. Mainland routes use smaller aircraft (A320 ~180 seats) vs intercontinental (A350 ~300+). Mainland passenger share probably 15-18%, lower than 24% op share."
+  },
+
+  "cad_civil_international_air_transport": {
+    "_unit": "persons",
+    "_source": "CAD Civil Aviation Department, Stat Webpage.xlsx (in data/legco_sources/CAD_air_traffic_1998_2026.xlsx)",
+    "_note": "CAD Stat Webpage.xlsx — all-port passenger totals (residents + visitors, all directions)",
+    "2019": {"arrival": 35657254, "departure": 35630298, "total": 71287552, "yoy_pct": -4.1},
+    "2020": {"arrival": 4445813, "departure": 4368411, "total": 8814224, "yoy_pct": -87.6},
+    "2021": {"arrival": 540667, "departure": 804210, "total": 1344877, "yoy_pct": -84.7},
+    "2022": {"arrival": 2648724, "departure": 2990290, "total": 5639014, "yoy_pct": 319.3},
+    "2023": {"arrival": 19884862, "departure": 19504600, "total": 39389462, "yoy_pct": 598.5},
+    "2024": {"arrival": 26713614, "departure": 26203748, "total": 52917362, "yoy_pct": 34.3},
+    "2025": {"arrival": 30622904, "departure": 30193669, "total": 60816573, "yoy_pct": 14.9}
+  },
+
+  "gaps_to_fill": [
+    "2024 mid-year revised population (likely in AD 2025 due Sep 2026)",
+    "2024 births / deaths / natural change (provisional figures available via C&SD; AD 2025 will revise)",
+    "2024 OWP arrivals (Security Bureau)",
+    "2025 talent admission scheme approvals by category (multiple gov.hk press releases)",
+    "Monthly arrival counts of approved talent visa holders (not just approvals)",
+    "Updated mainland HK residents stock (next census 2026 or C&SD interim)",
+    "Mid-year 2025 population (will be in ISSF01/2026 around Aug-Sep 2026)"
+  ]
+}

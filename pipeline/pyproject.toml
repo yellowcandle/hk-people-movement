@@ -1,0 +1,14 @@
+[project]
+name = "hk-people-movement-pipeline"
+version = "0.1.0"
+description = "Data ingestion pipeline: IMMD CSV, HKIA flight API, LegCo PDFs → canonical data/"
+requires-python = ">=3.11"
+dependencies = [
+    "pypdf==5.0.1",
+    "requests==2.32.3",
+    "pandas==2.2.3",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
