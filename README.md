@@ -11,7 +11,7 @@ Built as an open response to [atseed.co/hkborder](https://atseed.co/hkborder/). 
 ## Architecture
 
 - **Static site** built with [Observable Framework](https://observablehq.com/framework), deploys to **Cloudflare Pages**.
-- **Data pipeline** (`pipeline/`) refreshes IMMD CSV + HKIA flights daily via GitHub Actions cron (02:00 HKT).
+- **Data pipeline** (`pipeline/`) refreshes IMMD CSV + HKIA flights on demand via `make data` — refresh whenever you want a snapshot, no cron.
 - **All numbers traceable** to a primary source — pinned PDF in `data/legco_sources/` or live fetch from C&SD / IMMD / HKIA / CAD.
 - **Validation gate**: `pipeline/validate.py` blocks the build if any number in `data/hk_population_master.json` lacks a `source` field.
 
@@ -25,8 +25,8 @@ Streamlit needs a long-running Python server. Cloudflare Pages serves static ass
 
 | File | Source | Refresh cadence |
 |---|---|---|
-| `data/immd_daily_passenger_traffic_2021_2025.csv` | [immd.gov.hk/opendata](https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/statistics_on_daily_passenger_traffic.csv) | daily via `pipeline/fetch_immd.py` |
-| `data/hkia_91d/*.json` | hongkongairport.com Flight Info REST API | daily, rolling 91 days, via `pipeline/fetch_hkia_window.py` |
+| `data/immd_daily_passenger_traffic_2021_2025.csv` | [immd.gov.hk/opendata](https://www.immd.gov.hk/opendata/eng/transport/immigration_clearance/statistics_on_daily_passenger_traffic.csv) | on demand via `pipeline/fetch_immd.py` |
+| `data/hkia_91d/*.json` | hongkongairport.com Flight Info REST API | on demand, rolling 91 days, via `pipeline/fetch_hkia_window.py` |
 | `data/legco_sources/*.pdf` | LegCo Research Office RPDB (`app7.legco.gov.hk/rpdb`) | manual pin per issue |
 | `data/legco_sources/CSD_AD_2024.pdf` | C&SD Hong Kong Annual Digest of Statistics 2024 | manual pin per year |
 | `data/legco_sources/CAD_air_traffic_1998_2026.xlsx` | Civil Aviation Department air traffic statistics | manual pin per refresh |
@@ -110,7 +110,7 @@ make build
 wrangler pages deploy dist --project-name=hk-people-movement
 ```
 
-CI handles this automatically via `.github/workflows/daily-rebuild.yml` on push to `main` and at 02:00 HKT daily. Required repo secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+Or wire Cloudflare Pages' built-in GitHub integration to build on push (no cron needed; refresh data manually with `make data` when you want a new snapshot).
 
 ## OpenSpec
 
